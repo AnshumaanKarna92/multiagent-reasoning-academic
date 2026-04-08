@@ -1,7 +1,7 @@
-# 🧠 Emergent Behavior in Multi-Agent LLM Systems
+# Emergent Behavior in Multi-Agent LLM Systems
 Analyzing coordination, failure modes, and system-level intelligence in agentic AI
 
-## 🚀 Overview
+## Overview
 
 This project explores how multiple AI agents interact in a shared environment and how emergent behaviors arise from their interactions.
 
@@ -12,7 +12,7 @@ Instead of focusing only on correctness, this system studies:
 * System instability and oscillation patterns
 * The role of verification and coordination in stabilizing multi-agent systems
 
-## 🤖 System Architecture
+## System Architecture
 
 The system consists of four interacting agents:
 
@@ -21,7 +21,7 @@ The system consists of four interacting agents:
 * **🧪 Evaluator Agent** → Verifies correctness independently
 * **🧭 Coordinator Agent** → Controls flow (STOP / CONTINUE)
 
-### 🔄 Interaction Flow
+### Interaction Flow
 
 ```
 User Input
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## 🧪 Experiments Conducted
+## Experiments Conducted
 
 We tested the system across different task types:
 
@@ -122,7 +122,7 @@ Evaluator: FINAL CORRECT
 Coordinator: STOP
 ```
 
-## 🧠 Key Insight
+## Key Insight
 
 Even when individual agents behave correctly, their interaction can produce incorrect or unstable system-level behavior. This demonstrates the complexity of multi-agent coordination and the emergence of system-level properties beyond individual agent capabilities.
 
@@ -156,17 +156,6 @@ readme.md              This file
 * Test on additional domains beyond mathematics
 * Benchmark against single-agent baselines
 
-## 🎯 Why This Project Matters
-
-Multi-agent systems are increasingly used in:
-* AI tutoring and educational systems
-* Autonomous workflow management
-* Collaborative AI tools and assistants
-
-Understanding emergent behavior is critical for building:
-* **Reliable** AI systems that behave predictably
-* **Interpretable** systems where human operators understand outputs
-* **Robust** systems that handle edge cases and failures gracefully
 
 ## 📚 Configuration
 
@@ -180,12 +169,3 @@ The system is configurable through parameters in main.py:
 
 This project is licensed under the MIT License. See LICENSE for details.
 
-## 🤝 Contributing
-
-This research is open to contributions. Areas of interest:
-
-* Alternative agent architectures and protocols
-* New problem domains
-* Enhanced failure detection mechanisms
-* Visualization and monitoring tools
-* Comparative analysis with single-agent systems
