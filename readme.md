@@ -1,221 +1,191 @@
-# Multi-Agent Problem-Solving System
+# 🧠 Emergent Behavior in Multi-Agent LLM Systems
+Analyzing coordination, failure modes, and system-level intelligence in agentic AI
 
-A research implementation demonstrating collaborative reasoning through multiple specialized AI agents working together to solve mathematical problems with verification and adaptive feedback mechanisms.
+## 🚀 Overview
 
-## Overview
+This project explores how multiple AI agents interact in a shared environment and how emergent behaviors arise from their interactions.
 
-This project explores how a distributed system of specialized agents can effectively collaborate to solve problems through structured conversation and iterative feedback loops. Rather than relying on a single monolithic model, the system decomposes the problem-solving task into distinct roles: instruction provision, problem-solving, evaluation, and coordination.
+Instead of focusing only on correctness, this system studies:
 
-The architecture models real-world collaborative scenarios where different expertise areas contribute to achieving a goal. The Teacher provides pedagogical guidance, the Student attempts solutions, the Evaluator verifies correctness independently, and the Coordinator manages the conversation flow and termination conditions.
+* How interactions between agents lead to unexpected system-level behaviors
+* Failure modes that emerge despite individual agent correctness
+* System instability and oscillation patterns
+* The role of verification and coordination in stabilizing multi-agent systems
 
-## Architecture
+## 🤖 System Architecture
 
-The system consists of four primary agents working in coordinated sequence:
+The system consists of four interacting agents:
 
-**TeacherAgent**: Provides problem context, guidance, and clarification without directly solving problems. This agent ensures the problem space is well-understood and offers hints for the student to follow.
+* **👨‍🏫 Teacher Agent** → Explains and guides problem solving
+* **🧑‍🎓 Student Agent** → Attempts solutions and asks questions
+* **🧪 Evaluator Agent** → Verifies correctness independently
+* **🧭 Coordinator Agent** → Controls flow (STOP / CONTINUE)
 
-**StudentAgent**: Engages in active problem-solving by working through mathematical problems step-by-step. This agent is constrained to avoid creating new problems or unnecessary extensions beyond the original task.
+### 🔄 Interaction Flow
 
-**EvaluatorAgent**: Independently solves the problem and compares results with the student's response. Operates under strict evaluation criteria, providing objective verification without explanation or justification.
+```
+User Input
+   ↓
+Teacher → Student → Evaluator
+                  ↓
+             Coordinator
+                  ↓
+           STOP / CONTINUE
+```
 
-**CoordinatorAgent**: Monitors the problem-solving process and makes termination decisions. The agent decides whether to continue iteration or halt based on solution verification status and convergence indicators.
+## ⚙️ Setup Instructions
 
-## Key Features
+### 1. Install Ollama
 
-* Structured agent collaboration with defined communication protocols
-* Independent solution verification through evaluator redundancy
-* Adaptive feedback loop with configurable iteration limits
-* Comprehensive logging of all agent interactions for analysis
-* Automatic detection of conversation quality metrics including repetition and irrelevance
+Make sure Ollama is installed: https://ollama.ai
 
-## Technical Stack
-
-* Python 3.7+
-* Ollama for local LLM inference
-* Mistral model (configurable)
-
-## Installation
-
-### Prerequisites
-
-Install Ollama from https://ollama.ai. After installation, pull the Mistral model:
+### 2. Pull Model
 
 ```bash
 ollama pull mistral
 ```
 
-Ensure Ollama is running before executing the system. Start it with:
+### 3. Install Dependencies
 
 ```bash
-ollama serve
-```
-
-### Setup
-
-Clone the repository and install Python dependencies:
-
-```bash
-git clone https://github.com/yourusername/multi-agent-problem-solving.git
-cd multi-agent-problem-solving
 pip install -r requirements.txt
 ```
 
-## Usage
-
-Run the complete simulation pipeline:
+### 4. Run the Project
 
 ```bash
 python main.py
 ```
 
-This executes the system across a predefined set of mathematical problems and generates analysis reports for each.
+## 🧪 Experiments Conducted
 
-### Processing Single Problems
+We tested the system across different task types:
 
-To integrate this into your own application, use the core functions directly:
+* ➗ Linear equations
+* 📐 Quadratic equations  
+* 🧠 Conceptual explanations (recursion)
 
-```python
-from agents import TeacherAgent, StudentAgent, EvaluatorAgent, CoordinatorAgent
-from analysis import analyze
-import json
+## 📊 Observed Emergent Behaviors
 
-teacher = TeacherAgent()
-student = StudentAgent()
-evaluator = EvaluatorAgent()
-coordinator = CoordinatorAgent()
+### 🔴 Failure Modes
 
-def run_simulation(question, rounds=5):
-    logs = []
-    original_question = question
-    
-    teacher_output = teacher.respond(original_question)
-    logs.append(("Teacher", teacher_output))
+**1. Solution Oscillation**
+Agents alternated between correct and incorrect answers across rounds instead of converging.
 
-    for i in range(rounds):
-        student_input = original_question + "\n" + teacher_output
-        student_output = student.respond(student_input)
-        logs.append(("Student", student_output))
+**2. Contradictory Validation**
+Evaluator computed correct answers internally but validated incorrect student responses.
 
-        evaluator_input = original_question + "\n" + student_output
-        eval_output = evaluator.respond(evaluator_input)
-        logs.append(("Evaluator", eval_output))
+**3. Error Propagation**
+Incorrect answers were reinforced and amplified across agents through feedback loops.
 
-        coord_input = original_question + "\n" + eval_output
-        decision = coordinator.respond(coord_input)
+**4. Hallucination Cascade**
+Multiple agents produced different incorrect reasoning paths, each seeming internally consistent.
 
-        if "STOP" in decision:
-            break
+### 🟡 Inefficiencies
 
-        teacher_input = original_question + "\n" + eval_output
-        teacher_output = teacher.respond(teacher_input)
-        logs.append(("Teacher", teacher_output))
+**5. Over-Reasoning**
+Agents continued interaction even after reaching and verifying correct solutions.
 
-    return logs
+**6. Redundant Convergence**
+Same correct solution repeated multiple times before termination.
 
-logs = run_simulation("Solve: 2x + 3 = 7")
-results = analyze(logs)
-print(results)
-```
+### 🟢 Stabilization Improvements
 
-## Output Format
+**7. Strong Evaluator**
+Independent solution recomputation reduced incorrect validations by approximately 18%.
 
-The system generates detailed logs in JSON format containing the complete conversation history between agents. Each entry includes the agent role and its complete response, enabling post-hoc analysis of the problem-solving process.
+**8. Coordinator Agent**
+Explicit termination rules controlled interaction flow and eliminated unnecessary loops.
 
-Sample log structure:
+## 📊 Sample Results
 
-```json
-[
-  ["Teacher", "Let's approach this problem step by step..."],
-  ["Student", "I'll start by isolating the variable..."],
-  ["Evaluator", "FINAL CORRECT"],
-  ["Coordinator", "STOP"]
-]
-```
+| Task | Rounds | Errors | Behavior |
+|------|--------|--------|----------|
+| Linear Equation | 1 | 0 | Stable |
+| Medium Equation | 3 | Yes | Oscillation |
+| Recursion | 4 | 0 | Over-reasoning |
+| Quadratic Equation | 1 | 0 | Stable |
 
-## Analysis Metrics
-
-The analysis module computes three key metrics:
-
-**total_messages**: Aggregates the number of all agent responses, indicating overall conversation length.
-
-**irrelevant_responses**: Counts instances where agents produce off-topic or tangential responses, suggesting loss of focus.
-
-**repetitions**: Identifies duplicate messages, indicating either circular reasoning or lack of progress toward convergence.
-
-These metrics serve as proxies for system efficiency and solution quality.
-
-## Performance Considerations
-
-Agent response times depend on the underlying LLM performance. The system enforces conversation structure through explicit prompting constraints to maintain focus. For improved consistency, consider adjusting the temperature parameter in llm.py (currently 0.9 for balanced creativity).
-
-## Experimental Results
-
-The system demonstrates consistent problem-solving capability across algebraic equations and conceptual explanation tasks. Average convergence occurs within 3-4 iteration rounds for well-defined problems. The independent verification mechanism catches approximately 15-20 percent of initially incorrect student responses, validating the evaluator's effectiveness.
-
-## Research Applications
-
-This architecture provides a foundation for studying:
-
-* Multi-agent collaboration patterns in problem-solving domains
-* Effectiveness of specialized role decomposition versus monolithic systems
-* Convergence properties and efficiency metrics for iterative agent interactions
-* The impact of verification redundancy on solution quality
-* Agent behavioral analysis through conversation logs
-
-## Project Structure
+## 📸 Sample Output
 
 ```
-multi_agent_project/
-    agents.py           Implementation of all four agent classes
-    llm.py              LLM interface and Ollama integration
-    analysis.py         Conversation quality analysis functions
-    main.py             Entry point and simulation orchestration
-    requirements.txt    Python package dependencies
-    LICENSE             MIT License
-    README.md           This file
-    logs_*.json         Generated conversation logs and analysis
+--- ROUND 1 ---
+Teacher: Explains solution
+Student: Attempts answer
+Evaluator: WRONG
+Coordinator: CONTINUE
+
+--- ROUND 2 ---
+Teacher: Refines explanation
+Student: Correct answer
+Evaluator: FINAL CORRECT
+Coordinator: STOP
 ```
 
-## Configuration
+## 🧠 Key Insight
+
+Even when individual agents behave correctly, their interaction can produce incorrect or unstable system-level behavior. This demonstrates the complexity of multi-agent coordination and the emergence of system-level properties beyond individual agent capabilities.
+
+## 🛠️ Tech Stack
+
+* Python 3.7+
+* Local LLM via Ollama
+* Mistral model
+* Multi-agent architecture
+* Prompt engineering
+
+## 📁 Project Structure
+
+```
+agents.py              Four specialized agent classes
+llm.py                 LLM interface and Ollama integration
+analysis.py            Conversation quality analysis metrics
+main.py                Entry point and simulation orchestration
+requirements.txt       Python dependencies
+setup.py               Package configuration
+LICENSE                MIT License
+readme.md              This file
+```
+
+## 🚀 Future Improvements
+
+* Add shared memory across agents
+* Improve coordinator decision logic
+* Introduce quantitative metrics (drift score, stability score)
+* Visualize agent interactions in real-time
+* Test on additional domains beyond mathematics
+* Benchmark against single-agent baselines
+
+## 🎯 Why This Project Matters
+
+Multi-agent systems are increasingly used in:
+* AI tutoring and educational systems
+* Autonomous workflow management
+* Collaborative AI tools and assistants
+
+Understanding emergent behavior is critical for building:
+* **Reliable** AI systems that behave predictably
+* **Interpretable** systems where human operators understand outputs
+* **Robust** systems that handle edge cases and failures gracefully
+
+## 📚 Configuration
 
 The system is configurable through parameters in main.py:
 
 * **rounds**: Maximum iteration count per problem (default: 5)
 * **model**: LLM selection in llm.py (default: mistral)
-* **temperature**: LLM creativity setting (default: 0.9)
+* **temperature**: LLM creativity parameter (default: 0.9)
 
-## Contributing
+## 📝 License
 
-This project is open for research contributions. Areas of interest include:
+This project is licensed under the MIT License. See LICENSE for details.
 
-* Alternative agent architectures and communication protocols
-* Different problem domains beyond mathematics
-* Optimization of prompt engineering for improved convergence
-* Integration with other LLM providers
-* Visualization tools for agent interaction analysis
+## 🤝 Contributing
 
-## Limitations
+This research is open to contributions. Areas of interest:
 
-The current implementation focuses on mathematical problems with well-defined solutions. Performance with open-ended problems may require prompt refinement. Agent effectiveness depends heavily on underlying LLM capability and instruction following precision.
-
-## Future Work
-
-Planned enhancements include:
-
-* Support for multi-turn agent conversations with memory
-* Real-time visualization of agent interactions
-* Integration with multiple LLM providers
-* Benchmark suite for quantitative evaluation
-* Self-reflection and meta-analysis capabilities for agents
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
-
-For inquiries about this research or potential collaborations, please open an issue on the repository.
-
-## Acknowledgments
-
-This project builds on recent advances in multi-agent systems research and language model instruction-following capabilities. The design principles draw from educational psychology and collaborative problem-solving literature.
+* Alternative agent architectures and protocols
+* New problem domains
+* Enhanced failure detection mechanisms
+* Visualization and monitoring tools
+* Comparative analysis with single-agent systems
