@@ -1,0 +1,191 @@
+configurations:
+  B0:
+    name: "Single-Agent Baseline (Student only)"
+    agents:
+      teacher: false
+      student: true
+      evaluator: false
+      coordinator: false
+    temperature: 0.9
+    max_rounds: 5
+    description: "Student agent alone, no guidance or verification"
+  
+  B1:
+    name: "Teacher-Student"
+    agents:
+      teacher: true
+      student: true
+      evaluator: false
+      coordinator: false
+    temperature: 0.9
+    max_rounds: 5
+    description: "Teacher provides guidance, student solves"
+  
+  B2:
+    name: "Teacher-Student-Evaluator (no Coordinator)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: false
+    temperature: 0.9
+    max_rounds: 5
+    description: "Added independent verification"
+  
+  B3:
+    name: "Full System (Teacher-Student-Evaluator-Coordinator)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: true
+    temperature: 0.9
+    max_rounds: 5
+    coordinator_history: full
+    description: "Complete system with flow control"
+  
+  B4:
+    name: "Weak Evaluator (conservative)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: true
+    temperature: 0.9
+    max_rounds: 5
+    evaluator_mode: "conservative"
+    description: "Evaluator with stricter correctness thresholds"
+  
+  B5:
+    name: "No Coordinator (fixed max rounds)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: false
+    temperature: 0.9
+    max_rounds: 5
+    description: "Verification without active flow control"
+  
+  B6:
+    name: "Low Temperature (0.3)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: true
+    temperature: 0.3
+    max_rounds: 5
+    description: "Conservative, low-variance responses"
+  
+  B7:
+    name: "Medium Temperature (0.5)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: true
+    temperature: 0.5
+    max_rounds: 5
+    description: "Balanced temperature for stability"
+  
+  B8:
+    name: "High Temperature (0.95)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: true
+    temperature: 0.95
+    max_rounds: 5
+    description: "High variance, exploratory responses"
+  
+  A1:
+    name: "Ablation: No Evaluator"
+    agents:
+      teacher: true
+      student: true
+      evaluator: false
+      coordinator: true
+    temperature: 0.9
+    max_rounds: 5
+    description: "Remove verification to isolate impact"
+  
+  A2:
+    name: "Ablation: No Coordinator"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: false
+    temperature: 0.9
+    max_rounds: 5
+    description: "Remove flow control to isolate impact"
+  
+  A3:
+    name: "Ablation: Fake Evaluator (always correct)"
+    agents:
+      teacher: true
+      student: true
+      evaluator: true
+      coordinator: true
+    temperature: 0.9
+    max_rounds: 5
+    evaluator_mode: "always_correct"
+    description: "Test impact of fake verification"
+
+experiment_matrix:
+  tier_1_mandatory:
+    - B0
+    - B3
+    - B6
+    - B8
+    - A1
+    - A2
+  tier_2_recommended:
+    - B1
+    - B2
+    - B5
+    - B7
+  tier_3_optional:
+    - B4
+    - A3
+
+seeds:
+  primary: [1, 42, 123]
+  extended: [1, 42, 123, 999, 777, 256, 512, 1024, 2048, 4096]
+
+problem_selection:
+  test_set: "all"
+  min_problems: 30
+  recommended_problems: 60
+  difficulty_distribution:
+    easy: 10
+    medium: 10
+    hard: 10
+
+metrics_to_compute:
+  - final_accuracy
+  - convergence_rounds
+  - oscillation_count
+  - semantic_oscillation
+  - contradiction_rate
+  - agreement_rate
+  - stop_latency
+  - tokens_to_convergence
+  - explanation_diversity
+  - over_reasoning_ratio
+  - stability_score
+  - problem_solving_efficiency_index
+
+statistical_tests:
+  alpha: 0.05
+  bonferroni_correction: true
+  effect_size_threshold: 0.5
+
+logging:
+  level: "INFO"
+  detailed_logs: true
+  log_format: "JSONL"
+  storage_path: "logs/"
+  enable_transcript_saving: true
