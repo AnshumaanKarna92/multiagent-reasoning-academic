@@ -1,4 +1,4 @@
-# Multi-Agent Large Language Model Systems: Emergent Behaviors and Coordination
+# Emergent Behaviors in Multi-Agent LLM Systems for Educational Applications
 
 **Research implementation investigating emergent behaviors, failure modes, and coordination mechanisms in multi-agent AI systems through mathematical problem-solving.**
 
